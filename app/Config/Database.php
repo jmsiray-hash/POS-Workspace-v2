@@ -81,20 +81,45 @@ class Database extends Config
         ],
     ];
 
-   public function __construct()
-{
-    parent::__construct();
+    public function __construct()
+    {
+        parent::__construct();
 
-    $this->default['hostname'] = getenv('database.default.hostname') ?: env('database.default.hostname', $this->default['hostname']);
-    $this->default['username'] = getenv('database.default.username') ?: env('database.default.username', $this->default['username']);
-    $this->default['password'] = getenv('database.default.password') ?: env('database.default.password', $this->default['password']);
-    $this->default['database'] = getenv('database.default.database') ?: env('database.default.database', $this->default['database']);
-    
-    $port = getenv('database.default.port') ?: env('database.default.port', $this->default['port']);
-    $this->default['port'] = (int) $port;
+        // Sinusubukan ang iba't ibang paraan para makuha ang Environment Variables sa Render/Docker
+        $this->default['hostname'] = getenv('MYSQLHOST') 
+            ?: getenv('database.default.hostname') 
+            ?: $_ENV['database.default.hostname'] 
+            ?: $_SERVER['database.default.hostname'] 
+            ?: env('database.default.hostname', $this->default['hostname']);
 
-    if (ENVIRONMENT === 'testing') {
-        $this->defaultGroup = 'tests';
+        $this->default['username'] = getenv('MYSQLUSER') 
+            ?: getenv('database.default.username') 
+            ?: $_ENV['database.default.username'] 
+            ?: $_SERVER['database.default.username'] 
+            ?: env('database.default.username', $this->default['username']);
+
+        $this->default['password'] = getenv('MYSQLPASSWORD') 
+            ?: getenv('database.default.password') 
+            ?: $_ENV['database.default.password'] 
+            ?: $_SERVER['database.default.password'] 
+            ?: env('database.default.password', $this->default['password']);
+
+        $this->default['database'] = getenv('MYSQLDATABASE') 
+            ?: getenv('database.default.database') 
+            ?: $_ENV['database.default.database'] 
+            ?: $_SERVER['database.default.database'] 
+            ?: env('database.default.database', $this->default['database']);
+
+        $port = getenv('MYSQLPORT') 
+            ?: getenv('database.default.port') 
+            ?: $_ENV['database.default.port'] 
+            ?: $_SERVER['database.default.port'] 
+            ?: env('database.default.port', $this->default['port']);
+
+        $this->default['port'] = (int) $port;
+
+        if (ENVIRONMENT === 'testing') {
+            $this->defaultGroup = 'tests';
+        }
     }
-}
 }
