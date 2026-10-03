@@ -81,18 +81,20 @@ class Database extends Config
         ],
     ];
 
-    public function __construct()
-    {
-        parent::__construct();
+   public function __construct()
+{
+    parent::__construct();
 
-        $this->default['hostname'] = env('database.default.hostname', $this->default['hostname']);
-        $this->default['username'] = env('database.default.username', $this->default['username']);
-        $this->default['password'] = env('database.default.password', $this->default['password']);
-        $this->default['database'] = env('database.default.database', $this->default['database']);
-        $this->default['port']     = (int) env('database.default.port', $this->default['port']);
+    $this->default['hostname'] = getenv('database.default.hostname') ?: env('database.default.hostname', $this->default['hostname']);
+    $this->default['username'] = getenv('database.default.username') ?: env('database.default.username', $this->default['username']);
+    $this->default['password'] = getenv('database.default.password') ?: env('database.default.password', $this->default['password']);
+    $this->default['database'] = getenv('database.default.database') ?: env('database.default.database', $this->default['database']);
+    
+    $port = getenv('database.default.port') ?: env('database.default.port', $this->default['port']);
+    $this->default['port'] = (int) $port;
 
-        if (ENVIRONMENT === 'testing') {
-            $this->defaultGroup = 'tests';
-        }
+    if (ENVIRONMENT === 'testing') {
+        $this->defaultGroup = 'tests';
     }
+}
 }
